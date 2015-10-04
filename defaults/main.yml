@@ -1,0 +1,11 @@
+---
+# defaults file for ansible-manage-ssh-keys
+enable_manage_ssh_keys: false  #defines if accounts in deploy_ssh_pub_keys should be managed
+manage_ssh_keys:  #defines remote users to add ssh pub keys for either the remote user or adding another users pub key to a remote user for passwordless ssh
+  - remote_user: demo_user
+    keys:
+      - ssh_pub_keys/demo_user.pub
+#      - ssh_pub_keys/demo_user_1.pub
+#  - remote_user: demo_user2
+#    keys:
+#      - ssh_pub_keys/demo_user2.pub
