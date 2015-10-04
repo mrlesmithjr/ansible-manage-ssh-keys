@@ -15,4 +15,11 @@
   with_subelements:
     - deploy_ssh_pub_keys
     - keys
-  when: (ssh_pub_keys.results[0].stat.exists and item[1] is defined and (item[1] != '' and item[1] != none))
+  when: (ssh_pub_keys.results[0].stat.exists and item[1] is defined and (item[1] != '' and item[1] != none) and (item[0].present is defined and item[0].present))
+
+- name: manage_ssh_keys | removing ssh user keys
+  authorized_key: user={{ item[0].remote_user }} key="{{ lookup('file', 'item[1]') }}" state=absent
+  with_subelements:
+    - deploy_ssh_pub_keys
+    - keys
+  when: (ssh_pub_keys.results[0].stat.exists and item[1] is defined and (item[1] != '' and item[1] != none) and (item[0].present is defined and not item[0].present))
