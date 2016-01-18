@@ -1,38 +1,25 @@
 ---
-- name: manage_ssh_keys | checking for ssh pub keys if defined
-  stat:
-    path: "{{ item.1 }}"
-  register: ssh_pub_keys
-  delegate_to: localhost
-  run_once: true
-  sudo: false
-  with_subelements:
-    - manage_ssh_keys
-    - keys
-  when: >
-        manage_ssh_keys is defined and
-        (item.1 is defined and item.1 != '' and item.1 != none)
-
 - name: manage_ssh_keys | adding ssh user keys
   authorized_key:
     user: "{{ item.0.remote_user }}"
-    key: "{{ lookup('file', 'item.1') }}"
+    key: "{{ lookup('file', item.1) }}"
     state: present
   with_subelements:
     - manage_ssh_keys
     - keys
   when: >
-        (ssh_pub_keys.results.0.stat.exists and item.1 is defined and (item.1 != '' and item != none) and
-        (item.0.present is defined and item.0.present))
+        (item.0.present is defined and item.0.present) and
+        item.1 is defined
 
 - name: manage_ssh_keys | removing ssh user keys
   authorized_key:
     user: "{{ item.0.remote_user }}"
-    key: "{{ lookup('file', 'item.1') }}"
+    key: "{{ lookup('file', item.1) }}"
     state: absent
   with_subelements:
     - manage_ssh_keys
     - keys
   when: >
-        (ssh_pub_keys.results.0.stat.exists and item.1 is defined and (item.1 != '' and item.1 != none) and
-        (item.0.present is defined and not item.0.present))
+        (item.0.present is defined and not item.0.present) and
+        item.1 is defined
+
