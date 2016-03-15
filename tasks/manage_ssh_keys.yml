@@ -5,5 +5,5 @@
     key: "{{ lookup('file', item.1) }}"
     state: "{{ item.0.state }}"
   with_subelements:
-    - manage_ssh_keys
+    - '{{ manage_ssh_keys }}'
     - keys
